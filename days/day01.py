@@ -46,7 +46,20 @@ def calculateDialResult(currentDialNum: int, direction: str, clicks: int) -> int
 
 
 def calculateTimesPassedZero(currentDialNum: int, direction: str, clicks: int) -> int:
+    start = currentDialNum
+    end = currentDialNum
     if direction == "L":
-        return abs((currentDialNum - clicks) // 100)
+        end = currentDialNum - clicks
     else:
-        return abs((currentDialNum + clicks) // 100)
+        end = currentDialNum + clicks
+
+    if end < 0:
+        if start == 0:
+            return end // -100
+        else:
+            return 1 + end // -100
+    elif end > 99:
+        return end // 100
+    elif end == 0:
+        return 1
+    return 0
