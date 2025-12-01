@@ -2,14 +2,16 @@ import sys
 from runner import run_all, run_day
 
 
-def main():
+def main() -> None:
     if len(sys.argv) == 1:
         print("Usage:")
         print("  python main.py <day> [part]")
+        print("  python main.py all")
         print("Examples:")
         print("  python main.py 3        # run both parts")
         print("  python main.py 3 1      # run part 1 only")
         print("  python main.py 3 2      # run part 2 only")
+        print("  python main.py all      # runs all days in parallel")
         sys.exit()
 
     try:

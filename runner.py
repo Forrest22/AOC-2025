@@ -12,10 +12,10 @@ def load_input(day: int) -> str:
         return f.read().rstrip("\n")
 
 
-def run_day(day: int, part: int | None = None):
+def run_day(day: int, part: int | None = None) -> None:
     """
     Loads the function for the specific day, the input data, and runs the solver
-    input:
+    input: 1) day, an integer indicating which day to run and 2) part (optional, will run both if left empty), which part to run
     """
     module_name = f"days.day{day:02d}"
 
@@ -43,7 +43,7 @@ def run_day(day: int, part: int | None = None):
         print(f"Part 2: {part2}")
 
 
-def _run_single_day_for_pool(day: int):
+def _run_single_day_for_pool(day: int) -> tuple[int, str, str]:
     """
     This helper runs inside a separate process for each day.
     It returns results in a structured form.
@@ -79,7 +79,7 @@ def run_all(max_workers: int | None = None):
     Runs all discovered dayXX modules in parallel.
     Prints results in order after all jobs complete.
     input: The maximum number of processes that can be used to execute the given calls. If None or not given then as many worker processes will be created as the machine has processors.
-    TODO: Improve formatting so that it updates a table when each day finishes, and display them in order.
+    TODO: Improve formatting so that it updates a table when each day finishes and display them in order, rather than the current waiting until all finish.
     """
     day_ids = discover_available_days()
 
