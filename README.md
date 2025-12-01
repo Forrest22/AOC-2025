@@ -10,7 +10,7 @@ Run a specific Advent of Code day:
 
 - <day> — the day number (e.g., 3)
 - [part] — optional, 1 or 2
-- - If omitted, both parts run.
+  - If omitted, both parts run.
 
 Run all available days in parallel:
 
