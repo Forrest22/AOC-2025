@@ -8,8 +8,8 @@ Run a specific Advent of Code day:
 
 `python main.py <day> [part]`
 
-- `<day>` — the day number (e.g., 3)
-- `[part]` — optional, 1 or 2
+- `<day>` — the day number (e.g., `3`)
+- `[part]` — optional, `1` or `2`
   - If omitted, both parts run.
 
 Run all available days in parallel:

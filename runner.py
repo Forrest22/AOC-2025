@@ -64,7 +64,7 @@ def _run_single_day_for_pool(day: int) -> tuple[int, str, str]:
 
 
 def discover_available_days():
-    """Scan the days/ folder for dayXX.py files"""
+    """Scan the days/folder for dayXX.py files"""
     import days
 
     day_ids = []
@@ -79,7 +79,7 @@ def run_all(max_workers: int | None = None):
     Runs all discovered dayXX modules in parallel.
     Prints results in order after all jobs complete.
     input: The maximum number of processes that can be used to execute the given calls. If None or not given then as many worker processes will be created as the machine has processors.
-    TODO: Improve formatting so that it updates a table when each day finishes and display them in order, rather than the current waiting until all finish.
+    TODO: Improve formatting so that it updates a table when each day is running/completed and display them in order, rather than the current waiting until all finish.
     """
     day_ids = discover_available_days()
 
