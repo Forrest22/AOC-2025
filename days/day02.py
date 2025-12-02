@@ -63,7 +63,7 @@ def isInvalidIDPart2(i: int) -> bool:
     """
     iStr = str(i)
 
-    # Removing the first element in the array (the integer `1`)
+    # Removing the first element in the array (it will always be the integer `1`, which we can ignore)
     factors = find_factors(len(iStr))[1:]
 
     for factor in factors:
