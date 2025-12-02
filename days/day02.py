@@ -45,6 +45,10 @@ def solve_part2(input_data: str) -> int:
 
 
 def isInvalidIDPart1(i: int) -> bool:
+    """
+    Determines if a string is invalid for part 1.
+    If a number is two repeated strings, its invalid.
+    """
     iStr = str(i)
     firstpart, secondpart = iStr[: len(iStr) // 2], iStr[len(iStr) // 2 :]
     if firstpart == secondpart:
@@ -53,7 +57,13 @@ def isInvalidIDPart1(i: int) -> bool:
 
 
 def isInvalidIDPart2(i: int) -> bool:
+    """
+    Determines if a string is invalid for part 2.
+    If a number is any number of repeated strings, its invalid.
+    """
     iStr = str(i)
+
+    # Removing the first element in the array (the integer `1`)
     factors = find_factors(len(iStr))[1:]
 
     for factor in factors:
@@ -70,6 +80,9 @@ def isInvalidIDPart2(i: int) -> bool:
 
 
 def find_factors(number) -> list[int]:
+    """
+    Finds the factors of a number, helpful for finding how many repeating string segments a number can be split into
+    """
     if not isinstance(number, int) or number <= 0:
         return
 
