@@ -20,7 +20,6 @@ def solve_part1(inputData: str) -> int:
     for bank in batteryBanks:
         leftmostJoltage, rightmostJoltage = 0, 0
         leftmostJoltageIndex = 0
-        print(bank)
         for i, battery in enumerate(bank):
             batteryJoltage = int(battery)
             if (batteryJoltage > leftmostJoltage) and i != len(bank) - 1:
@@ -44,22 +43,14 @@ def solve_part2(inputData: str) -> int:
 
     totalJoltage = 0
     for bank in batteryBanks:
-        remove = len(bank) - 12
+        removeCount = len(bank) - 12
         stack = []
         for digit in bank:
-            while remove > 0 and stack and stack[-1] < int(digit):
+            # Greedy algorithm to fill the stack with the highest number possible
+            while removeCount > 0 and stack and stack[-1] < int(digit):
                 stack.pop()
-                remove -= 1
+                removeCount -= 1
             stack.append(int(digit))
         val = int("".join(map(str, stack[:12])))
         totalJoltage += val
     return totalJoltage
-
-
-def get_max(batteryBank: List[str]) -> int:
-    maxIndex = 0
-    for i, value in enumerate(batteryBank):
-        if value > maxValue:
-            maxValue = value
-            maxIndex = i
-    return maxIndex
