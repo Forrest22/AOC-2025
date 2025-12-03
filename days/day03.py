@@ -37,7 +37,7 @@ def solve_part1(inputData: str) -> int:
 
 def solve_part2(inputData: str) -> int:
     """
-    input_data: full contents of inputs/day02.txt as a string.
+    input_data: full contents of inputs/day03.txt as a string.
     return: (part 2 answer)
     """
     batteryBanks = parse_battery_banks(inputData)
