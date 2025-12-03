@@ -40,5 +40,26 @@ def solve_part2(inputData: str) -> int:
     input_data: full contents of inputs/day02.txt as a string.
     return: (part 2 answer)
     """
+    batteryBanks = parse_battery_banks(inputData)
 
-    return 0
+    totalJoltage = 0
+    for bank in batteryBanks:
+        remove = len(bank) - 12
+        stack = []
+        for digit in bank:
+            while remove > 0 and stack and stack[-1] < int(digit):
+                stack.pop()
+                remove -= 1
+            stack.append(int(digit))
+        val = int("".join(map(str, stack[:12])))
+        totalJoltage += val
+    return totalJoltage
+
+
+def get_max(batteryBank: List[str]) -> int:
+    maxIndex = 0
+    for i, value in enumerate(batteryBank):
+        if value > maxValue:
+            maxValue = value
+            maxIndex = i
+    return maxIndex
