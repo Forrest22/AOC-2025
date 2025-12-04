@@ -6,7 +6,7 @@ def parse_battery_banks(inputData: str) -> List[str]:
     Extract integer battery values from each line of input (each bank).
     """
     lines = inputData.splitlines()
-    return [line for line in lines]
+    return lines
 
 
 def solve_part1(inputData: str) -> int:
