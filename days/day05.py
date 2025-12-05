@@ -48,11 +48,25 @@ def solve_part1(inputData: str) -> int:
     return count_fresh_ingredients(freshIngredientRanges, ingredientList)
 
 
+def count_all_fresh_ingredient_ids(freshIngredientRanges: List[Tuple[int, int]]) -> int:
+    sortedIngredientRanges = sorted(freshIngredientRanges)
+
+    current = -1
+    count = 0
+    for start, end in sortedIngredientRanges:
+        if current >= start:
+            start = current + 1
+        if start <= end:
+            count += end - start + 1
+        current = max(current, end)
+    return count
+
+
 def solve_part2(inputData: str) -> int:
     """
     input_data: full contents of inputs/day05.txt as a string.
     return: (part 2 answer)
     """
-    paperRollMap = ingredient_database(inputData)
+    freshIngredientRanges, _ = ingredient_database(inputData)
 
-    return 0
+    return count_all_fresh_ingredient_ids(freshIngredientRanges)
