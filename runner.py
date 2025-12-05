@@ -30,7 +30,11 @@ def run_day(day: int, part: int | None = None) -> None:
         print(f"Module {moduleName} is missing: {', '.join(missing)}")
         return
 
-    inputData = load_input(day)
+    try:
+        inputData = load_input(day)
+    except:
+        print("Error finding input file for day", day)
+        return
 
     print(f"--- Day {day:02d} ---")
 

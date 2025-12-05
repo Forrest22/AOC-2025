@@ -14,7 +14,7 @@ directions = [
 
 def parse_paper_roll_diagram(inputData: str) -> List[str]:
     """
-    Extract integer battery values from each line of input (each bank).
+    Extract the map of paper rolls.
     """
     lines = inputData.splitlines()
     return lines
