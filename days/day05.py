@@ -1,14 +1,16 @@
 from typing import List, Tuple, Mapping
 
 
-def ingredient_database(inputData: str) -> Tuple[Mapping[int, bool], List[str]]:
+def ingredient_database(
+    inputData: str,
+) -> Tuple[List[Tuple[int, int]], List[str]]:
     """
     Extract the range of fresh ingredients into a dict, then aggregates the ingredient list and returns both.
     """
     lines = inputData.splitlines()
 
     ingredientIdsSection = False
-    freshIngredients = {}
+    freshIngredientRanges = []
     ingredientList = []
 
     for line in lines:
@@ -17,24 +19,22 @@ def ingredient_database(inputData: str) -> Tuple[Mapping[int, bool], List[str]]:
         elif ingredientIdsSection:
             ingredientList.append(line)
         else:
-            # if we're processing the fresh ingredient ranges
+            # if we're processing the fresh ingredient ranges, save the ranges into a list
             freshRange = line.split("-")
-            start = int(freshRange[0])
-            end = int(freshRange[1])
-            for i in range(start, end + 1):
-                freshIngredients[i] = True
-
-    return (freshIngredients, ingredientList)
+            freshIngredientRanges.append((int(freshRange[0]), int(freshRange[1])))
+    return (freshIngredientRanges, ingredientList)
 
 
 def count_fresh_ingredients(
-    freshIngredients: Mapping[str, bool],
+    freshIngredientRanges: List[Tuple[int, int]],
     ingredientList: List[str],
 ) -> int:
     count = 0
     for ingredient in ingredientList:
-        if int(ingredient) in freshIngredients:
-            count += 1
+        for range in freshIngredientRanges:
+            if range[0] <= int(ingredient) <= range[1]:
+                count += 1
+                break
     return count
 
 
