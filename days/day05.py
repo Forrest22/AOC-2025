@@ -1,4 +1,4 @@
-from typing import List, Tuple, Mapping
+from typing import List, Tuple
 
 
 def ingredient_database(
