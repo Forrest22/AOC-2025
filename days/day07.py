@@ -76,10 +76,6 @@ def process_quantum_manifold_splits(tachyonManifold: List[str]) -> int:
                 beams = [beam for beam in beams if j != beam]
                 beams.append(j + 1)
                 beams.append(j - 1)
-        # print(
-        #     "".join([char if i not in beams else "|" for i, char in enumerate(line)]),
-        #     sorted(beams),
-        # )
 
     count = 0
     for beam in set(beams):
