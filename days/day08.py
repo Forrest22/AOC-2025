@@ -1,4 +1,4 @@
-import itertools
+from collections import defaultdict
 import math
 from typing import Dict, List, Tuple
 
@@ -131,7 +131,7 @@ def find_circuit_and_add_box(
     return RuntimeError("Ba humbug the box couldn't be added")
 
 
-distances: Dict[Tuple[JunctionBox, JunctionBox], float] = dict()
+distances: Dict[Tuple[JunctionBox, JunctionBox], float] = defaultdict()
 
 
 def get_shortest_distance_box(
@@ -169,9 +169,79 @@ def solve_part1(inputData: str) -> int:
     return calculate_result_part1(boxes)
 
 
+def calculate_result_part2(boxes: Circuit) -> int:
+    _, firstCircuit = get_shortest_distance_box(boxes)
+    del distances[firstCircuit]
+    circuits = [Circuit([firstCircuit[0], firstCircuit[1]])]
+    for box in firstCircuit:
+        boxes.remove(box)
+
+    lowest = 99999999999999
+    lowestBoxPair = None
+    while len(boxes) > 0:
+        lowest = 99999999999999
+        lowestBoxPair = None
+        for boxPair in distances.keys():
+            if distances[boxPair] < lowest:
+                lowest = distances[boxPair]
+                lowestBoxPair = boxPair
+        del distances[lowestBoxPair]
+        if lowestBoxPair[0] in boxes and lowestBoxPair[1] in boxes:
+            for box in lowestBoxPair:
+                boxes.remove(box)
+            circuits.append([lowestBoxPair[0], lowestBoxPair[1]])
+        elif lowestBoxPair[0] in boxes:
+            boxes.remove(lowestBoxPair[0])
+            circuits = find_circuit_and_add_box(
+                inCircuitBox=lowestBoxPair[1],
+                freeBox=lowestBoxPair[0],
+                circuits=circuits,
+            )
+        elif lowestBoxPair[1] in boxes:
+            boxes.remove(lowestBoxPair[1])
+            circuits = find_circuit_and_add_box(
+                inCircuitBox=lowestBoxPair[0],
+                freeBox=lowestBoxPair[1],
+                circuits=circuits,
+            )
+        else:
+            circ0Index, circ1Index = -1, -1
+            for i, circ in enumerate(circuits):
+                if lowestBoxPair[0] in circ and lowestBoxPair[1] in circ:
+                    # ignore this case
+                    pass
+                elif lowestBoxPair[0] in circ:
+                    # found one
+                    circ0Index = i
+                elif lowestBoxPair[1] in circ:
+                    # found two
+                    circ1Index = i
+                else:
+                    # do nothing
+                    pass
+
+            if circ0Index != -1 and circ1Index != -1:
+                # combine
+                newCircs: List[Circuit] = []
+                for i, circ in enumerate(circuits):
+                    if i == circ0Index:
+                        newCircs.append(circuits[circ0Index] + circuits[circ1Index])
+                    elif i == circ1Index:
+                        pass
+                    else:
+                        newCircs.append(circ)
+                circuits = newCircs
+            else:
+                pass
+
+    # return the three largest numbers
+    return (lowestBoxPair[0]).x * (lowestBoxPair[1]).x
+
+
 def solve_part2(inputData: str) -> int:
     """
     input_data: full contents of inputs/day08.txt as a string.
     return: (part 2 answer)
     """
-    return 0
+    boxes = parse_junction_boxes(inputData)
+    return calculate_result_part2(boxes)

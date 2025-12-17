@@ -1,6 +1,6 @@
 # AOC-2025
 
-Trying this year in python. Of course you will want to provide your own inputs.
+Trying this year in python. Of course you will want to provide your own inputs by creating the directory `/inputs` with each relevant day's input text formated as: `day[XX].txt`. Leading zeroes area required.
 
 ## Usage
 
