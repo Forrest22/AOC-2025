@@ -1,6 +1,6 @@
 from collections import defaultdict
 import math
-from typing import Dict, List, Tuple
+from typing import DefaultDict, List, Tuple
 
 
 class JunctionBox:
@@ -131,7 +131,7 @@ def find_circuit_and_add_box(
     return RuntimeError("Ba humbug the box couldn't be added")
 
 
-distances: Dict[Tuple[JunctionBox, JunctionBox], float] = defaultdict()
+distances: DefaultDict[Tuple[JunctionBox, JunctionBox], float] = defaultdict()
 
 
 def get_shortest_distance_box(
