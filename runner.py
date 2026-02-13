@@ -4,6 +4,7 @@ import os
 import pkgutil
 import sys
 import time
+import signal
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
@@ -80,10 +81,108 @@ def discover_available_days():
     return sorted(day_ids)
 
 
+def _init_worker():
+    # Ignore Ctrl-C in worker processes
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+
 def run_all(max_workers: int | None = None):
     day_ids = discover_available_days()
 
-    print(f"running {len(day_ids)} days in parallel...\n")
+    status = {
+        d: {
+            "done": False,
+            "part1": "",
+            "part2": "",
+            "time": 0.0,
+            "error": None,
+        }
+        for d in day_ids
+    }
+
+    spinner_cycle = itertools.cycle(["|", "/", "-", "\\"])
+
+    def render():
+        print("\033[H", end="")
+        print("Advent of Code - https://github.com/Forrest22/AOC-2025/ - Parallel Run\n")
+        print(f"{'Day':>4}  {'St':^3}  {'Part 1':>15}  {'Part 2':>15}  {'Time(s)':>8}")
+        print("-" * 55)
+
+        spin_char = next(spinner_cycle)
+
+        for d in sorted(status):
+            info = status[d]
+
+            if info["done"]:
+                if info["error"]:
+                    state = "X"
+                    p1 = p2 = "-"
+                    runtime = "-"
+                else:
+                    state = "✓"
+                    p1 = str(info["part1"])
+                    p2 = str(info["part2"])
+                    runtime = f"{info['time']:.3f}"
+            else:
+                state = spin_char
+                p1 = p2 = runtime = ""
+
+            print(f"{d:>4}  {state:^3}  {p1:>15}  {p2:>15}  {runtime:>8}")
+
+        sys.stdout.flush()
+
+    print("\033[2J")
+
+    exe = ProcessPoolExecutor(
+        max_workers=max_workers,
+        initializer=_init_worker
+    )
+
+    future_map = {}
+
+    try:
+        future_map = {exe.submit(_run_single_day_for_pool, d): d for d in day_ids}
+
+        while future_map:
+            for future in list(future_map):
+                if future.done():
+                    day = future_map.pop(future)
+                    try:
+                        d, part1, part2, duration = future.result()
+                        status[d]["done"] = True
+                        status[d]["part1"] = part1
+                        status[d]["part2"] = part2
+                        status[d]["time"] = duration
+                    except Exception as e:
+                        status[day]["done"] = True
+                        status[day]["error"] = str(e)
+
+            render()
+            time.sleep(0.2)
+
+    except KeyboardInterrupt:
+        print("\nCTRL-C detected. Shutting down cleanly...")
+
+        # Cancel pending futures
+        for f in future_map:
+            f.cancel()
+
+        # Kill worker processes immediately
+        for p in exe._processes.values():
+            p.terminate()
+
+        exe.shutdown(wait=False, cancel_futures=True)
+
+        # Bypass Python's atexit + threading cleanup
+        os._exit(0)
+
+
+    finally:
+        exe.shutdown(wait=True)
+
+    print("\nAll days complete!")
+
+    day_ids = discover_available_days()
 
     status = {
         d: {
@@ -102,7 +201,7 @@ def run_all(max_workers: int | None = None):
         # Move cursor to top instead of clearing (less flicker)
         print("\033[H", end="")
 
-        print("Advent of Code — Parallel Run\n")
+        print("Advent of Code - https://github.com/Forrest22/AOC-2025/ - Parallel Run\n")
         print(f"{'Day':>4}  {'St':^3}  {'Part 1':>15}  {'Part 2':>15}  {'Time(s)':>8}")
         print("-" * 55)
 
