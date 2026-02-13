@@ -1,90 +1,92 @@
 from typing import List, Tuple
 
 
-def parse_ranges(inputData: str) -> List[Tuple[int, int]]:
+def parse_ranges(input_data: str) -> List[Tuple[int, int]]:
     """
-    Extract (start, end) integer tuples from the first line of input.
+    extract (start, end) integer tuples from the first line of input.
     """
-    line = inputData.splitlines()[0]
+    line = input_data.splitlines()[0]
     return [
         (int(start), int(end)) for start, end in (r.split("-") for r in line.split(","))
     ]
 
 
-def solve_part1(inputData: str) -> int:
+def solve_part1(input_data: str) -> int:
     """
     input_data: full contents of inputs/day02.txt as a string.
     return: (part 1 answer)
     """
-    IdRanges = parse_ranges(inputData)
+    id_ranges = parse_ranges(input_data)
 
-    listOfInvalidIDs = []
-    for pidRangeTuple in IdRanges:
-        for productID in range(pidRangeTuple[0], pidRangeTuple[1] + 1):
-            if is_invalid_id_part1(productID):
-                listOfInvalidIDs.append(productID)
+    list_of_invalid_ids = []
+    for pid_range_tuple in id_ranges:
+        for product_id in range(pid_range_tuple[0], pid_range_tuple[1] + 1):
+            if is_invalid_id_part1(product_id):
+                list_of_invalid_ids.append(product_id)
 
-    return sum(listOfInvalidIDs)
+    return sum(list_of_invalid_ids)
 
 
-def is_invalid_id_part1(id: int) -> bool:
+def is_invalid_id_part1(product_id: int) -> bool:
     """
-    Determines if a string is invalid for part 1.
-    If a number is two repeated strings, its invalid.
+    determines if a string is invalid for part 1.
+    if a number is two repeated strings, its invalid.
     """
-    idString = str(id)
-    firstPart, secondPart = (
-        idString[: len(idString) // 2],
-        idString[len(idString) // 2 :],
+    id_string = str(product_id)
+    first_part, second_part = (
+        id_string[: len(id_string) // 2],
+        id_string[len(id_string) // 2 :],
     )
-    if firstPart != secondPart:
+    if first_part != second_part:
         return False
     return True
 
 
-def solve_part2(inputData: str) -> int:
+def solve_part2(input_data: str) -> int:
     """
     input_data: full contents of inputs/day02.txt as a string.
     return: (part 2 answer)
     """
-    IdRanges = parse_ranges(inputData)
+    id_ranges = parse_ranges(input_data)
 
-    listOfInvalidIDs = []
-    for pidRangeTuple in IdRanges:
-        for i in range(pidRangeTuple[0], pidRangeTuple[1] + 1):
+    list_of_invalid_ids = []
+    for pid_range_tuple in id_ranges:
+        for i in range(pid_range_tuple[0], pid_range_tuple[1] + 1):
             if is_invalid_id_part_2(i):
-                listOfInvalidIDs.append(i)
+                list_of_invalid_ids.append(i)
 
-    return sum(listOfInvalidIDs)
+    return sum(list_of_invalid_ids)
 
 
-def is_invalid_id_part_2(id: int) -> bool:
+def is_invalid_id_part_2(product_id: int) -> bool:
     """
-    Determines if a string is invalid for part 2.
-    If a number is any number of repeated strings, its invalid.
+    determines if a string is invalid for part 2.
+    if a number is any number of repeated strings, its invalid.
     """
-    idString = str(id)
+    id_string = str(product_id)
 
-    # Removing the first element in the array (it will always be the integer `1`, which we can ignore)
-    factors = find_factors(len(idString))[1:]
+    # removing the first element in the array
+    # (it will always be the integer `1`, which we can ignore)
+    factors = find_factors(len(id_string))[1:]
 
     for factor in factors:
-        partSize = len(idString) // factor
-        parts = [idString[i * partSize : (i + 1) * partSize] for i in range(factor)]
+        part_size = len(id_string) // factor
+        parts = [id_string[i * part_size : (i + 1) * part_size] for i in range(factor)]
 
-        # If all the items in the list are equal (repeated digits)
+        # if all the items in the list are equal (repeated digits)
         if len(set(parts)) == 1:
             return True
 
     return False
 
 
-def find_factors(number) -> list[int]:
+def find_factors(number) -> List[int]:
     """
-    Finds the factors of a number, helpful for finding how many repeating string segments a number can be split into
+    finds the factors of a number,
+    helpful for finding how many repeating string segments a number can be split into
     """
     if not isinstance(number, int) or number <= 0:
-        return
+        return []
 
     factors = []
     for i in range(1, number + 1):

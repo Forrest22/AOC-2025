@@ -1,8 +1,8 @@
-from typing import list, default_dict
+from typing import List, DefaultDict
 from collections import defaultdict
 
-class machine():
-    def __init__(self, light_diagram: List[bool], button_schematics:List[List[int]], joltage_requirements:list[int]):
+class Machine():
+    def __init__(self, light_diagram: List[bool], button_schematics:List[List[int]], joltage_requirements:List[int]):
         self.light_diagram = light_diagram
         self.button_schematics = button_schematics
         self.joltage_requirements = joltage_requirements
@@ -11,12 +11,12 @@ class machine():
     def __repr__(self):
         return f"[{self.light_diagram}], {self.button_schematics}, {self.joltage_requirements}"
 
-def get_machine_list(input: str):
-    machine_list:list[machine] = []
-    for line in input.splitlines():
+def get_machine_list(input_data: str):
+    machine_list:List[Machine] = []
+    for line in input_data.splitlines():
         line_split = line.split(" ")
 
-        light_diagram = [True if val == "#" else False for val in line_split[0][1:-1]]
+        light_diagram = [val == "#" for val in line_split[0][1:-1]]
 
         button_wirings_raw = line_split[1:-1]
         button_wirings = []
@@ -25,25 +25,25 @@ def get_machine_list(input: str):
 
         joltages = [int(num) for num in line_split[-1][1:-1].replace(","," ").split()]
 
-        m = machine(light_diagram,button_wirings,joltages)
+        m = Machine(light_diagram,button_wirings,joltages)
         machine_list.append(m)
-    return machine_list     
+    return machine_list
 
-def dfs_part1( lights: list[bool],
-    target_lights: list[bool],
+def dfs_part1( lights: List[bool],
+    target_lights: List[bool],
     i: int,
-    buttons: list[list[int]],
-    cache: default_dict) -> int:
+    buttons: List[List[int]],
+    cache: DefaultDict) -> int:
     if lights == target_lights:
         return 0
-    
+
     if i == len(buttons):
         return -1
-    
+
     key = (tuple(lights), i)
     if key in cache:
         return cache[key]
-    
+
     result = 999999999
     for j in range(i,len(buttons)):
         for k in buttons[j]:
@@ -66,27 +66,27 @@ def solve_part1(input_data: str) -> int:
     total = 0
     for machine in machine_list:
         dd = defaultdict()
-        starting_lights = [false for light in machine.light_diagram]
+        starting_lights = [False for light in machine.light_diagram]
         r = dfs_part1(starting_lights, machine.light_diagram, 0, machine.button_schematics, dd)
         total += r
     return total
 
 
-def count_affected_buttons(index: int, buttons: list[list[int]], mask: int) -> int:
+def count_affected_buttons(index: int, buttons: List[List[int]], mask: int) -> int:
     """count how many available buttons affect the given joltage index."""
     count = 0
     k = mask
     while k > 0:
         # least significant bit
-        lsb = (k & -k)
-        button_index = (lsb.bit_length() - 1)
+        lsb = k & -k
+        button_index = lsb.bit_length() - 1
         if index in buttons[button_index]:
             count += 1
         k &= k - 1
     return count
 
 
-def combinations_iterator(n: int, minimum: int, maxima: list[int]):
+def combinations_iterator(n: int, minimum: int, maxima: List[int]):
     """
     generate all possible count combinations:
     each position i ranges from 0..maxima[i]
@@ -106,11 +106,12 @@ def combinations_iterator(n: int, minimum: int, maxima: list[int]):
 
     yield from backtrack(0, minimum)
 
-def dfs_part2(joltage: list[int],
+def dfs_part2(joltage: List[int],
               available_buttons_mask: int,
-              buttons: list[list[int]]) -> int:
+              buttons: List[List[int]]) -> int:
     """
-    optimized to cut as many corners as possible. focusing on the joltage that is affected by the least number of buttons.
+    optimized to cut as many corners as possible
+    focusing on the joltage that is affected by the least number of buttons
     inspired by https://github.com/michel-kraemer/adventofcode-rust/blob/main/2025/day10/src/main.rs
     """
 
@@ -141,7 +142,7 @@ def dfs_part2(joltage: list[int],
     matching_buttons = []
     km = available_buttons_mask
     while km > 0:
-        lsb = (km & -km)
+        lsb = km & -km
         k = lsb.bit_length() - 1
         if mini in buttons[k]:
             matching_buttons.append((k, buttons[k]))
@@ -166,7 +167,7 @@ def dfs_part2(joltage: list[int],
         for counts in combinations_iterator(len(matching_buttons), min_val, maxima):
 
             new_joltage = joltage[:]
-            valid = true
+            valid = True
 
             for bi, cnt in enumerate(counts):
                 if cnt == 0:
@@ -175,7 +176,7 @@ def dfs_part2(joltage: list[int],
                     if new_joltage[j] >= cnt:
                         new_joltage[j] -= cnt
                     else:
-                        valid = false
+                        valid = False
                         break
                 if not valid:
                     break
@@ -202,4 +203,3 @@ def solve_part2(input_data: str) -> int:
         r = dfs_part2(machine.joltage_requirements, (1 << len(machine.button_schematics)) - 1, machine.button_schematics)
         total += r
     return total
-

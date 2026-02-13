@@ -12,93 +12,91 @@ directions = [
 ]
 
 
-def parse_paper_roll_diagram(inputData: str) -> List[str]:
+def parse_paper_roll_diagram(input_data: str) -> List[str]:
     """
-    Extract the map of paper rolls.
+    extract the map of paper rolls.
     """
-    lines = inputData.splitlines()
+    lines = input_data.splitlines()
     return lines
 
 
-def solve_part1(inputData: str) -> int:
+def solve_part1(input_data: str) -> int:
     """
     input_data: full contents of inputs/day04.txt as a string.
     return: (part 1 answer)
     """
-    paperRollMap = parse_paper_roll_diagram(inputData)
+    paper_roll_map = parse_paper_roll_diagram(input_data)
 
-    movableRolls = 0
-    for i, _ in enumerate(paperRollMap):
-        for j, _ in enumerate(paperRollMap[0]):
-            adjacentCount = 0
-            if paperRollMap[i][j] == "@":
-                adjacentCount += count_adjacent_rolls(paperRollMap, i, j)
-                if adjacentCount < 4:
-                    movableRolls += 1
+    movable_rolls = 0
+    for i, _ in enumerate(paper_roll_map):
+        for j, _ in enumerate(paper_roll_map[0]):
+            adjacent_count = 0
+            if paper_roll_map[i][j] == "@":
+                adjacent_count += count_adjacent_rolls(paper_roll_map, i, j)
+                if adjacent_count < 4:
+                    movable_rolls += 1
 
-    return movableRolls
+    return movable_rolls
 
 
-def count_adjacent_rolls(paperRollMap: List[str], rowIndex, colIndex) -> int:
+def count_adjacent_rolls(paper_roll_map: List[str], row_index, col_index) -> int:
     count = 0
-    for adjacentDirection in directions:
-        newRowIndex = rowIndex + adjacentDirection[0]
-        newColIndex = colIndex + adjacentDirection[1]
+    for adjacent_direction in directions:
+        new_row_index = row_index + adjacent_direction[0]
+        new_col_index = col_index + adjacent_direction[1]
 
         if (
-            0 <= newRowIndex
-            and newRowIndex < len(paperRollMap)
-            and 0 <= newColIndex
-            and newColIndex < len(paperRollMap[0])
+            0 <= new_row_index < len(paper_roll_map)
+            and 0 <= new_col_index < len(paper_roll_map[0])
         ):
-            if paperRollMap[newRowIndex][newColIndex] == "@":
+            if paper_roll_map[new_row_index][new_col_index] == "@":
                 count += 1
 
     return count
 
 
-def solve_part2(inputData: str) -> int:
+def solve_part2(input_data: str) -> int:
     """
     input_data: full contents of inputs/day04.txt as a string.
     return: (part 2 answer)
     """
-    paperRollMap = parse_paper_roll_diagram(inputData)
+    paper_roll_map = parse_paper_roll_diagram(input_data)
 
-    movableRolls = 0
-    totalRemoved = 0
-    movableRolls = find_rolls_indices_to_remove(paperRollMap)
-    paperRollMap = remove_rolls_from_map(paperRollMap, movableRolls)
-    totalRemoved = len(movableRolls)
+    movable_rolls = 0
+    total_removed = 0
+    movable_rolls = find_rolls_indices_to_remove(paper_roll_map)
+    paper_roll_map = remove_rolls_from_map(paper_roll_map, movable_rolls)
+    total_removed = len(movable_rolls)
 
-    while len(movableRolls) > 0:
-        movableRolls = find_rolls_indices_to_remove(paperRollMap)
-        paperRollMap = remove_rolls_from_map(paperRollMap, movableRolls)
-        totalRemoved += len(movableRolls)
+    while len(movable_rolls) > 0:
+        movable_rolls = find_rolls_indices_to_remove(paper_roll_map)
+        paper_roll_map = remove_rolls_from_map(paper_roll_map, movable_rolls)
+        total_removed += len(movable_rolls)
 
-    return totalRemoved
+    return total_removed
 
 
 def remove_rolls_from_map(
-    paperRollMap: List[str], movableRollIndices: List[int]
+    paper_roll_map: List[str], movable_roll_indices: List[int]
 ) -> List[str]:
-    newPaperRollMap = paperRollMap
-    for index in movableRollIndices:
-        newPaperRollMap[index[0]] = (
-            paperRollMap[index[0]][: index[1]]
-            + "X"
-            + paperRollMap[index[0]][index[1] + 1 :]
+    new_paper_roll_map = paper_roll_map
+    for index in movable_roll_indices:
+        new_paper_roll_map[index[0]] = (
+            paper_roll_map[index[0]][: index[1]]
+            + "x"
+            + paper_roll_map[index[0]][index[1] + 1 :]
         )
-    return newPaperRollMap
+    return new_paper_roll_map
 
 
-def find_rolls_indices_to_remove(paperRollMap: List[str]) -> int:
-    rollIndicesToRemove = []
-    for i, _ in enumerate(paperRollMap):
-        for j, _ in enumerate(paperRollMap[0]):
-            adjacentCount = 0
-            if paperRollMap[i][j] == "@":
-                adjacentCount += count_adjacent_rolls(paperRollMap, i, j)
-                if adjacentCount < 4:
-                    rollIndicesToRemove.append((i, j))
+def find_rolls_indices_to_remove(paper_roll_map: List[str]) -> int:
+    roll_indices_to_remove = []
+    for i, _ in enumerate(paper_roll_map):
+        for j, _ in enumerate(paper_roll_map[0]):
+            adjacent_count = 0
+            if paper_roll_map[i][j] == "@":
+                adjacent_count += count_adjacent_rolls(paper_roll_map, i, j)
+                if adjacent_count < 4:
+                    roll_indices_to_remove.append((i, j))
 
-    return rollIndicesToRemove
+    return roll_indices_to_remove

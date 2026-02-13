@@ -3,12 +3,12 @@ import math
 
 
 def parse_math_homework(
-    inputData: str,
+    input_data: str,
 ) -> Tuple[List[List[int]], List[str]]:
     """
-    Extract the range of fresh ingredients into a dict, then aggregates the ingredient list and returns both.
+    Extracts the math homework, one 2D array and one list of operators
     """
-    lines = inputData.splitlines()
+    lines = input_data.splitlines()
 
     columns = []
     operators = []
@@ -27,7 +27,7 @@ def parse_math_homework(
 
 def calculate_grand_total(columns: List[List[int]], operators: List[str]) -> int:
     """
-    Calculates the grand total from the given columns and operators.
+    calculates the grand total from the given columns and operators.
     return: int
     """
     total = 0
@@ -37,37 +37,37 @@ def calculate_grand_total(columns: List[List[int]], operators: List[str]) -> int
         elif operator == "+":
             total += sum(columns[i])
         else:
-            print("Unexpected operator.")
+            print("unexpected operator.")
     return total
 
 
-def solve_part1(inputData: str) -> int:
+def solve_part1(input_data: str) -> int:
     """
     input_data: full contents of inputs/day06.txt as a string.
     return: (part 1 answer)
     """
-    columns, operators = parse_math_homework(inputData)
+    columns, operators = parse_math_homework(input_data)
     return calculate_grand_total(columns, operators)
 
 
-def solve_part2(inputData: str) -> int:
+def solve_part2(input_data: str) -> int:
     """
     input_data: full contents of inputs/day06.txt as a string.
     return: (part 2 answer)
     """
-    inputData = inputData.split("\n")
-    ops_line = inputData[-1]
-    del inputData[-1]
+    input_data = input_data.split("\n")
+    ops_line = input_data[-1]
+    del input_data[-1]
     data = [
         (i, op)
         for i, x in enumerate(ops_line)
         if (op := {"+": sum, "*": math.prod}.get(x))
     ]
-    startingIndices, opFunctions = zip(*data)
-    endingIndices = [i - 1 for i in startingIndices[1:]] + [None]
-    numsWithSpacingOffsets = [
-        [line[start:end] for line in inputData]
-        for start, end in zip(startingIndices, endingIndices)
+    starting_indices, op_functions = zip(*data)
+    ending_indices = [i - 1 for i in starting_indices[1:]] + [None]
+    nums_with_spacing_offsets = [
+        [line[start:end] for line in input_data]
+        for start, end in zip(starting_indices, ending_indices)
     ]
-    cephalopodNums = (map("".join, zip(*num)) for num in numsWithSpacingOffsets)
-    return sum(op(map(int, col)) for op, col in zip(opFunctions, cephalopodNums))
+    cephalopod_nums = (map("".join, zip(*num)) for num in nums_with_spacing_offsets)
+    return sum(op(map(int, col)) for op, col in zip(op_functions, cephalopod_nums))

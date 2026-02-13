@@ -1,56 +1,56 @@
 from typing import List
 
 
-def parse_battery_banks(inputData: str) -> List[str]:
+def parse_battery_banks(input_data: str) -> List[str]:
     """
-    Extract integer battery values from each line of input (each bank).
+    extract integer battery values from each line of input (each bank).
     """
-    lines = inputData.splitlines()
+    lines = input_data.splitlines()
     return lines
 
 
-def solve_part1(inputData: str) -> int:
+def solve_part1(input_data: str) -> int:
     """
     input_data: full contents of inputs/day03.txt as a string.
     return: (part 1 answer)
     """
-    batteryBanks = parse_battery_banks(inputData)
+    battery_banks = parse_battery_banks(input_data)
 
-    totalJoltage = 0
-    for bank in batteryBanks:
-        leftmostJoltage, rightmostJoltage = 0, 0
-        leftmostJoltageIndex = 0
+    total_joltage = 0
+    for bank in battery_banks:
+        leftmost_joltage, rightmost_joltage = 0, 0
+        leftmost_joltage_index = 0
         for i, battery in enumerate(bank):
-            batteryJoltage = int(battery)
-            if (batteryJoltage > leftmostJoltage) and i != len(bank) - 1:
-                leftmostJoltage = batteryJoltage
-                leftmostJoltageIndex = i
-                rightmostJoltage = int(bank[i + 1])
-        for j in range(len(bank) - 1, leftmostJoltageIndex, -1):
-            batteryJoltage = int(bank[j])
-            if batteryJoltage > rightmostJoltage:
-                rightmostJoltage = int(bank[j])
-        totalJoltage += int(str(leftmostJoltage) + str(rightmostJoltage))
-    return totalJoltage
+            battery_joltage = int(battery)
+            if (battery_joltage > leftmost_joltage) and i != len(bank) - 1:
+                leftmost_joltage = battery_joltage
+                leftmost_joltage_index = i
+                rightmost_joltage = int(bank[i + 1])
+        for j in range(len(bank) - 1, leftmost_joltage_index, -1):
+            battery_joltage = int(bank[j])
+            if battery_joltage > rightmost_joltage:
+                rightmost_joltage = int(bank[j])
+        total_joltage += int(str(leftmost_joltage) + str(rightmost_joltage))
+    return total_joltage
 
 
-def solve_part2(inputData: str) -> int:
+def solve_part2(input_data: str) -> int:
     """
     input_data: full contents of inputs/day03.txt as a string.
     return: (part 2 answer)
     """
-    batteryBanks = parse_battery_banks(inputData)
+    battery_banks = parse_battery_banks(input_data)
 
-    totalJoltage = 0
-    for bank in batteryBanks:
-        removeCount = len(bank) - 12
+    total_joltage = 0
+    for bank in battery_banks:
+        remove_count = len(bank) - 12
         stack = []
         for digit in bank:
-            # Greedy algorithm to fill the stack with the highest number possible
-            while removeCount > 0 and stack and stack[-1] < int(digit):
+            # greedy algorithm to fill the stack with the highest number possible
+            while remove_count > 0 and stack and stack[-1] < int(digit):
                 stack.pop()
-                removeCount -= 1
+                remove_count -= 1
             stack.append(int(digit))
         val = int("".join(map(str, stack[:12])))
-        totalJoltage += val
-    return totalJoltage
+        total_joltage += val
+    return total_joltage
