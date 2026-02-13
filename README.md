@@ -18,7 +18,7 @@ Run all available days in parallel:
 
 Examples
 
-```
+```console
 python main.py 3        # Run both parts of Day 3
 python main.py 3 1      # Run only Part 1
 python main.py 3 2      # Run only Part 2
